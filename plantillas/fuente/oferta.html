@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Plantilla Oferta</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="base.css">
+<style>
+  .lienzo {
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 40px, rgba(255,255,255,0) 40px 80px),
+      linear-gradient(160deg, #3D8BCD 0%, var(--azul) 45%, var(--azul-medio) 100%);
+  }
+  .sello {
+    position: absolute; top: 40px; right: 56px;
+    width: 230px; height: 230px; border-radius: 50%;
+    background: #FFC83D; color: var(--azul-oscuro);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    transform: rotate(10deg);
+    box-shadow: 0 16px 40px rgba(0,0,0,.25);
+    border: 8px solid rgba(255,255,255,.6);
+  }
+  .sello b { font-size: 96px; font-weight: 800; line-height: .9; }
+  .sello span { font-size: 26px; font-weight: 800; letter-spacing: 1px; }
+  .zona-gancho { color: #fff; }
+  .zona-gancho .ejemplo span { color: #FFC83D; }
+
+  .precio {
+    position: absolute; left: 90px; bottom: 210px;
+    font-size: 30px; font-weight: 700; color: #DCEBF8;
+  }
+  .precio b { color: #fff; font-weight: 800; }
+  .boton {
+    position: absolute; left: 64px; right: 64px; bottom: 64px; height: 120px;
+    justify-content: center;
+    background: var(--verde); color: #fff; font-size: 36px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.25);
+  }
+  .boton small { font-weight: 500; font-size: 26px; opacity: .9; }
+</style>
+</head>
+<body>
+<div class="lienzo">
+  <img class="logo" src="logo_blanco.png" alt="Storedimo">
+  <div class="sello"><b>15</b><span>DÍAS GRATIS</span></div>
+
+  <div class="zona-gancho">
+    <div class="ejemplo">Deja el cuaderno. <span>Controla tu inventario</span> desde hoy, gratis.</div>
+  </div>
+
+  <div class="precio">Después, planes desde <b>$10.000</b> · Sin tarjeta para probar</div>
+  <div class="pildora boton">Crea tu cuenta gratis <small>· storedimoapp.softdimo.com</small></div>
+</div>
+<script>if (location.search.includes('preview')) document.body.classList.add('preview');</script>
+</body>
+</html>

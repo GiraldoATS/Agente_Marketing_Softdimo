@@ -1,0 +1,209 @@
+{
+  "name": "Storedimo - 03 Seguimiento de usuarios en Trial",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "storedimo-nuevo-trial",
+        "authentication": "headerAuth",
+        "options": {}
+      },
+      "id": "c1b2c3d4-0003-4000-8000-000000000001",
+      "name": "Nuevo trial (desde Laravel)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 0],
+      "webhookId": "storedimo-nuevo-trial"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Nuevo trial (desde Laravel)').first().json.body.email }}",
+        "subject": "=¡Bienvenido a Storedimo, {{ $('Nuevo trial (desde Laravel)').first().json.body.nombre }}! Tus primeros 3 pasos",
+        "emailType": "text",
+        "message": "=Hola {{ $('Nuevo trial (desde Laravel)').first().json.body.nombre }},\n\nGracias por crear tu cuenta de {{ $('Nuevo trial (desde Laravel)').first().json.body.empresa }} en Storedimo. Tienes 15 días gratis para probar todo.\n\nPara ver resultados desde hoy, haz esto en 10 minutos:\n1. Crea tus categorías y registra tus 10 productos más vendidos.\n2. Registra a tus proveedores principales.\n3. Haz tu primera venta de prueba y mira cómo baja el stock.\n\nEntra aquí: https://storedimoapp.softdimo.com/login\n\n¿Dudas? Responde este correo y te ayudamos.\n\nEquipo Storedimo",
+        "options": {}
+      },
+      "id": "c1b2c3d4-0003-4000-8000-000000000002",
+      "name": "Correo día 0 - Bienvenida",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [240, 0]
+    },
+    {
+      "parameters": { "amount": 3, "unit": "days" },
+      "id": "c1b2c3d4-0003-4000-8000-000000000003",
+      "name": "Esperar 3 días",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [480, 0],
+      "webhookId": "storedimo-wait-3d"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Nuevo trial (desde Laravel)').first().json.body.email }}",
+        "subject": "¿Sabes cuánto pierdes en productos vencidos o dañados?",
+        "emailType": "text",
+        "message": "=Hola {{ $('Nuevo trial (desde Laravel)').first().json.body.nombre }},\n\nLa mayoría de negocios no sabe cuánto dinero se le va en productos dañados, robados o vencidos.\n\nEn Storedimo puedes registrar cada baja con su motivo y ver al final del mes cuánto te costó. Es el primer paso para dejar de perder plata.\n\nPruébalo hoy: https://storedimoapp.softdimo.com/login\n\nEquipo Storedimo",
+        "options": {}
+      },
+      "id": "c1b2c3d4-0003-4000-8000-000000000004",
+      "name": "Correo día 3 - Valor (bajas)",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [720, 0]
+    },
+    {
+      "parameters": { "amount": 7, "unit": "days" },
+      "id": "c1b2c3d4-0003-4000-8000-000000000005",
+      "name": "Esperar 7 días",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [960, 0],
+      "webhookId": "storedimo-wait-7d"
+    },
+    {
+      "parameters": {
+        "url": "=https://storedimoapp.softdimo.com/api/n8n/suscripciones/{{ $('Nuevo trial (desde Laravel)').first().json.body.suscripcion_id }}/estado",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "c1b2c3d4-0003-4000-8000-000000000006",
+      "name": "¿Ya pagó? (día 10)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1200, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "c1b2c3d4-0003-4000-8000-0000000000a1",
+              "leftValue": "={{ $json.pagado }}",
+              "rightValue": "",
+              "operator": { "type": "boolean", "operation": "false", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c1b2c3d4-0003-4000-8000-000000000007",
+      "name": "No ha pagado (día 10)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1440, 0]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Nuevo trial (desde Laravel)').first().json.body.email }}",
+        "subject": "Te quedan 5 días de prueba en Storedimo",
+        "emailType": "text",
+        "message": "=Hola {{ $('Nuevo trial (desde Laravel)').first().json.body.nombre }},\n\nTu prueba gratis termina en 5 días. Para no perder la información que ya cargaste, elige tu plan; el plan Micro empieza desde $10.000.\n\nSi aún no has tenido tiempo de probarlo, responde este correo y agendamos 15 minutos para configurarlo contigo, sin costo.\n\nhttps://storedimoapp.softdimo.com/login\n\nEquipo Storedimo",
+        "options": {}
+      },
+      "id": "c1b2c3d4-0003-4000-8000-000000000008",
+      "name": "Correo día 10 - Quedan 5 días",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1680, -100]
+    },
+    {
+      "parameters": { "amount": 4, "unit": "days" },
+      "id": "c1b2c3d4-0003-4000-8000-000000000009",
+      "name": "Esperar 4 días",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1920, -100],
+      "webhookId": "storedimo-wait-4d"
+    },
+    {
+      "parameters": {
+        "url": "=https://storedimoapp.softdimo.com/api/n8n/suscripciones/{{ $('Nuevo trial (desde Laravel)').first().json.body.suscripcion_id }}/estado",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "c1b2c3d4-0003-4000-8000-000000000010",
+      "name": "¿Ya pagó? (día 14)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2160, -100]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "c1b2c3d4-0003-4000-8000-0000000000a2",
+              "leftValue": "={{ $json.pagado }}",
+              "rightValue": "",
+              "operator": { "type": "boolean", "operation": "false", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "c1b2c3d4-0003-4000-8000-000000000011",
+      "name": "No ha pagado (día 14)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2400, -100]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Nuevo trial (desde Laravel)').first().json.body.email }}",
+        "subject": "Mañana termina tu prueba de Storedimo",
+        "emailType": "text",
+        "message": "=Hola {{ $('Nuevo trial (desde Laravel)').first().json.body.nombre }},\n\nMañana termina tu prueba gratis. Activa tu plan hoy y sigue controlando el inventario de {{ $('Nuevo trial (desde Laravel)').first().json.body.empresa }} sin interrupciones.\n\nhttps://storedimoapp.softdimo.com/login\n\n¿Algo te frenó? Respóndenos y cuéntanos; leemos todos los correos.\n\nEquipo Storedimo",
+        "options": {}
+      },
+      "id": "c1b2c3d4-0003-4000-8000-000000000012",
+      "name": "Correo día 14 - Último día",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [2640, -200]
+    }
+  ],
+  "connections": {
+    "Nuevo trial (desde Laravel)": {
+      "main": [[{ "node": "Correo día 0 - Bienvenida", "type": "main", "index": 0 }]]
+    },
+    "Correo día 0 - Bienvenida": {
+      "main": [[{ "node": "Esperar 3 días", "type": "main", "index": 0 }]]
+    },
+    "Esperar 3 días": {
+      "main": [[{ "node": "Correo día 3 - Valor (bajas)", "type": "main", "index": 0 }]]
+    },
+    "Correo día 3 - Valor (bajas)": {
+      "main": [[{ "node": "Esperar 7 días", "type": "main", "index": 0 }]]
+    },
+    "Esperar 7 días": {
+      "main": [[{ "node": "¿Ya pagó? (día 10)", "type": "main", "index": 0 }]]
+    },
+    "¿Ya pagó? (día 10)": {
+      "main": [[{ "node": "No ha pagado (día 10)", "type": "main", "index": 0 }]]
+    },
+    "No ha pagado (día 10)": {
+      "main": [[{ "node": "Correo día 10 - Quedan 5 días", "type": "main", "index": 0 }], []]
+    },
+    "Correo día 10 - Quedan 5 días": {
+      "main": [[{ "node": "Esperar 4 días", "type": "main", "index": 0 }]]
+    },
+    "Esperar 4 días": {
+      "main": [[{ "node": "¿Ya pagó? (día 14)", "type": "main", "index": 0 }]]
+    },
+    "¿Ya pagó? (día 14)": {
+      "main": [[{ "node": "No ha pagado (día 14)", "type": "main", "index": 0 }]]
+    },
+    "No ha pagado (día 14)": {
+      "main": [[{ "node": "Correo día 14 - Último día", "type": "main", "index": 0 }], []]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "pinData": {}
+}

@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Agente de Marketing Softdimo – Guía interna</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul: #337AB7;
+    --azul-oscuro: #0B2545;
+    --azul-medio: #13406E;
+    --azul-claro: #E8F1FA;
+    --verde: #1C8A4C;
+    --verde-claro: #E6F4EC;
+    --amarillo: #FFC83D;
+    --amarillo-claro: #FFF6DD;
+    --rojo: #C2410C;
+    --rojo-claro: #FDEDE5;
+    --gris: #4B5563;
+    --linea: #DDE5EF;
+    --fondo: #F4F7FB;
+  }
+
+  @page {
+    size: A4;
+    margin: 18mm 16mm 20mm 16mm;
+    @bottom-right {
+      content: counter(page);
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      color: #8A94A6;
+    }
+    @bottom-left {
+      content: "Agente de Marketing Softdimo · Guía interna · Uso exclusivo del equipo";
+      font-family: 'Inter', sans-serif;
+      font-size: 9pt;
+      color: #8A94A6;
+    }
+  }
+  @page :first {
+    margin: 0;
+    @bottom-right { content: none; }
+    @bottom-left { content: none; }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    font-size: 10pt;
+    line-height: 1.48;
+    color: #1F2937;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  h1, h2, h3 { font-family: 'Montserrat', 'Segoe UI', sans-serif; color: var(--azul-oscuro); line-height: 1.2; }
+  h2 {
+    font-size: 20pt; font-weight: 800; margin: 0 0 5mm;
+    padding-bottom: 3mm; border-bottom: 3px solid var(--azul);
+  }
+  h2 .num { color: var(--azul); margin-right: 6px; }
+  h3 { font-size: 12.5pt; font-weight: 700; margin: 5mm 0 2mm; }
+  p { margin: 0 0 3mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+  li { margin-bottom: 1.2mm; }
+  strong { color: var(--azul-oscuro); }
+  code {
+    font-family: Consolas, monospace; font-size: 9.5pt;
+    background: var(--azul-claro); color: var(--azul-medio);
+    padding: 1px 5px; border-radius: 4px;
+  }
+
+  .seccion { break-before: page; }
+  .no-cortar { break-inside: avoid; }
+
+  /* ---------- Portada ---------- */
+  .portada {
+    width: 210mm; height: 297mm; position: relative; overflow: hidden;
+    background:
+      radial-gradient(circle at 90% 10%, rgba(51,122,183,.6) 0, rgba(51,122,183,0) 45%),
+      linear-gradient(150deg, var(--azul-oscuro) 0%, var(--azul-medio) 60%, #1D5A92 100%);
+    color: #fff; padding: 28mm 22mm;
+  }
+  .portada img.logo { width: 70mm; }
+  .portada .etiqueta {
+    display: inline-block; margin-top: 40mm;
+    border: 1.5px solid rgba(255,255,255,.4); border-radius: 999px;
+    padding: 2mm 5mm; font-family: 'Montserrat'; font-weight: 600; font-size: 10pt; letter-spacing: 1px;
+  }
+  .portada h1 { color: #fff; font-size: 38pt; font-weight: 800; margin: 6mm 0 4mm; letter-spacing: -1px; }
+  .portada h1 span { color: #8EC3EE; }
+  .portada .sub { font-size: 14pt; color: #CFE2F3; max-width: 140mm; }
+  .portada .pie {
+    position: absolute; left: 22mm; right: 22mm; bottom: 24mm;
+    display: flex; justify-content: space-between; align-items: flex-end;
+    border-top: 1px solid rgba(255,255,255,.25); padding-top: 6mm;
+    font-size: 10pt; color: #CFE2F3;
+  }
+  .portada .pie b { color: #fff; display: block; font-size: 11pt; }
+  .portada svg.circuito { position: absolute; right: -20mm; top: 95mm; opacity: .08; }
+
+  /* ---------- Cajas ---------- */
+  .resumen {
+    background: var(--azul-claro); border-left: 5px solid var(--azul);
+    border-radius: 0 10px 10px 0; padding: 4mm 5mm; margin: 3mm 0 4mm;
+  }
+  .resumen p:last-child { margin: 0; }
+  .nota { border-radius: 10px; padding: 3mm 4.5mm; margin: 3mm 0; font-size: 9.5pt; break-inside: avoid; }
+  .nota.ok { background: var(--verde-claro); border: 1px solid #B7DFC8; }
+  .nota.aviso { background: var(--amarillo-claro); border: 1px solid #F3DD9B; }
+  .nota.alerta { background: var(--rojo-claro); border: 1px solid #F5C6AE; }
+  .nota b.tit { display: block; font-family: 'Montserrat'; margin-bottom: 1mm; color: var(--azul-oscuro); }
+
+  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 4mm 0; }
+  .dos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4mm; margin: 4mm 0; }
+  .dato {
+    background: var(--fondo); border: 1px solid var(--linea); border-radius: 10px; padding: 4mm;
+  }
+  .dato .grande { font-family: 'Montserrat'; font-weight: 800; font-size: 18pt; color: var(--azul); line-height: 1; }
+  .dato .peq { font-size: 9.5pt; color: var(--gris); margin-top: 1.5mm; }
+
+  /* ---------- Diagrama del recorrido ---------- */
+  .recorrido { margin: 3mm 0 4mm; }
+  .fila { display: flex; align-items: stretch; gap: 0; }
+  .paso {
+    flex: 1; border-radius: 10px; padding: 3.5mm; text-align: center;
+    background: #fff; border: 1.5px solid var(--linea);
+  }
+  .paso .ico {
+    width: 9mm; height: 9mm; border-radius: 50%; margin: 0 auto 2mm;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Montserrat'; font-weight: 800; color: #fff; font-size: 11pt;
+  }
+  .paso b { display: block; font-family: 'Montserrat'; font-size: 10pt; color: var(--azul-oscuro); }
+  .paso span { font-size: 8.5pt; color: var(--gris); display: block; line-height: 1.35; margin-top: 1mm; }
+  .flecha { width: 6mm; display: flex; align-items: center; justify-content: center; color: var(--azul); font-weight: 700; font-size: 14pt; }
+  .paso.n8n { border-color: var(--azul); background: var(--azul-claro); }
+  .paso.humano { border-color: var(--amarillo); background: var(--amarillo-claro); }
+  .paso.meta { border-color: var(--verde); background: var(--verde-claro); }
+  .leyenda { display: flex; gap: 6mm; font-size: 9pt; color: var(--gris); margin-top: 3mm; }
+  .leyenda i { display: inline-block; width: 4mm; height: 4mm; border-radius: 3px; vertical-align: -0.6mm; margin-right: 1.5mm; border: 1.5px solid; }
+
+  /* ---------- Tarjetas de flujos ---------- */
+  .flujo {
+    border: 1.5px solid var(--linea); border-radius: 12px; margin: 0 0 3.5mm; overflow: hidden;
+    break-inside: avoid;
+  }
+  .flujo .cab {
+    display: flex; align-items: center; gap: 4mm;
+    background: var(--azul-oscuro); color: #fff; padding: 2.5mm 4.5mm;
+  }
+  .flujo .cab .n {
+    width: 10mm; height: 10mm; border-radius: 8px; background: var(--azul);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Montserrat'; font-weight: 800; font-size: 12pt;
+  }
+  .flujo .cab h3 { color: #fff; margin: 0; font-size: 12.5pt; }
+  .flujo .cab small { display: block; color: #9FC4E6; font-size: 9pt; font-family: 'Inter'; font-weight: 500; }
+  .flujo .cuerpo { padding: 3mm 4.5mm 1mm; }
+  .flujo dl { display: grid; grid-template-columns: 34mm 1fr; gap: 1mm 4mm; margin: 0 0 2mm; }
+  .flujo dt { font-weight: 600; color: var(--azul-medio); font-size: 9.5pt; }
+  .flujo dd { margin: 0; font-size: 9.5pt; }
+  .estado {
+    display: inline-block; font-size: 8.5pt; font-weight: 600; padding: 0.5mm 3mm;
+    border-radius: 999px; margin-left: auto; white-space: nowrap;
+  }
+  .estado.listo { background: var(--verde); color: #fff; }
+  .estado.pend { background: var(--amarillo); color: var(--azul-oscuro); }
+
+  /* ---------- Tablas ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 9.5pt; break-inside: auto; }
+  th {
+    background: var(--azul); color: #fff; text-align: left; font-family: 'Montserrat'; font-weight: 700;
+    padding: 2.5mm 3mm; font-size: 9pt;
+  }
+  td { padding: 1.8mm 3mm; border-bottom: 1px solid var(--linea); vertical-align: top; }
+  tr:nth-child(even) td { background: var(--fondo); }
+  tr { break-inside: avoid; }
+
+  /* Estados de la hoja */
+  .chips { display: flex; align-items: center; gap: 2mm; flex-wrap: wrap; margin: 3mm 0 5mm; }
+  .chip { border-radius: 999px; padding: 1.5mm 4mm; font-weight: 600; font-size: 9.5pt; font-family: Consolas, monospace; }
+  .chip.c1 { background: #EEF0F4; color: var(--gris); }
+  .chip.c2 { background: var(--amarillo-claro); color: #8A5A00; border: 1px solid #F3DD9B; }
+  .chip.c3 { background: var(--verde-claro); color: var(--verde); border: 1px solid #B7DFC8; }
+  .chip-flecha { color: var(--azul); font-weight: 700; }
+  .chip-quien { font-size: 8.5pt; color: var(--gris); }
+
+  /* ---------- Rutina ---------- */
+  .rutina td:first-child { width: 30mm; font-weight: 700; color: var(--azul-oscuro); }
+  .rutina td:nth-child(3) { width: 34mm; }
+
+  /* ---------- Plantillas ---------- */
+  .plantillas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; margin: 4mm 0; }
+  .plantillas figure { margin: 0; break-inside: avoid; }
+  .plantillas img { width: 100%; border-radius: 8px; border: 1px solid var(--linea); display: block; }
+  .plantillas figcaption { font-size: 9pt; color: var(--gris); margin-top: 2mm; line-height: 1.4; }
+  .plantillas figcaption b { display: block; color: var(--azul-oscuro); font-family: 'Montserrat'; font-size: 10pt; }
+
+  .check li { list-style: none; margin-left: -6mm; padding-left: 7mm; position: relative; }
+  .check li::before {
+    content: ""; position: absolute; left: 0; top: 1.2mm; width: 3.6mm; height: 3.6mm;
+    border: 1.5px solid var(--azul); border-radius: 3px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================= PORTADA ======================= -->
+<section class="portada">
+  <img class="logo" src="../plantillas/fuente/logo_blanco.png" alt="Storedimo">
+  <svg class="circuito" width="560" height="560" viewBox="0 0 520 520" fill="none" stroke="#fff" stroke-width="6">
+    <path d="M60 80 H300 V220 H460"/><circle cx="460" cy="220" r="16"/>
+    <path d="M60 180 H200 V360 H420"/><circle cx="420" cy="360" r="16"/>
+    <path d="M60 280 H120 V460 H300"/><circle cx="300" cy="460" r="16"/>
+    <circle cx="60" cy="80" r="16"/><circle cx="60" cy="180" r="16"/><circle cx="60" cy="280" r="16"/>
+  </svg>
+  <div class="etiqueta">GUÍA INTERNA · SOLO PARA EL EQUIPO SOFTDIMO</div>
+  <h1>Nuestro Agente de Marketing<br><span>para vender Storedimo</span></h1>
+  <p class="sub">Herramienta interna de Softdimo: cómo funciona el sistema automático que usamos para conseguir clientes para Storedimo y qué le toca hacer a cada persona del equipo. No es un producto ni un servicio para nuestros clientes.</p>
+  <div class="pie">
+    <div><b>Softdimo · Uso interno</b>Octubre 2026 · Versión 1.1</div>
+    <div style="text-align:right"><b>Construido con n8n + Claude</b>storedimoapp.softdimo.com</div>
+  </div>
+</section>
+
+<!-- ======================= 1. QUÉ ES ======================= -->
+<section class="seccion">
+  <h2><span class="num">1.</span>¿Qué es y para qué sirve?</h2>
+
+  <div class="resumen">
+    <p><strong>En una frase:</strong> es una herramienta <strong>interna de Softdimo</strong>, hecha con automatizaciones en <strong>n8n</strong>, que trabaja como <strong>nuestro</strong> equipo de marketing y ventas para vender Storedimo: crea contenido para nuestras redes, atiende a los interesados con un asesor de inteligencia artificial llamado <strong>"Dimo"</strong> y le hace seguimiento a cada persona que se registra en la prueba gratis.</p>
+    <p><strong>No es un producto para clientes:</strong> no es un módulo de Storedimo ni un servicio de marketing que vendamos u ofrezcamos. Los clientes no lo reciben ni lo usan; solo ven sus resultados (nuestras publicaciones, el chat con Dimo y los correos de la prueba).</p>
+  </div>
+
+  <p>El objetivo es simple: <strong>que más negocios prueben Storedimo y que más de esas pruebas se conviertan en clientes que pagan.</strong> La automatización hace el trabajo repetitivo y el equipo se encarga de lo que necesita criterio humano: aprobar contenido, grabar videos y cerrar ventas. Ninguna publicación sale sin aprobación y los prospectos más interesados siempre los atiende una persona.</p>
+
+  <h3>Lo único que vendemos: Storedimo</h3>
+  <p><strong>Storedimo</strong> es un sistema de inventario 100% en la nube para pequeños y medianos negocios (tiendas, minimercados, ferreterías, droguerías, papelerías, distribuidoras). Permite controlar clientes, proveedores, categorías, productos, compras, ventas, stock en tiempo real y bajas por daño, robo o vencimiento.</p>
+
+  <div class="tres">
+    <div class="dato"><div class="grande">15 días</div><div class="peq">de prueba gratis, sin tarjeta</div></div>
+    <div class="dato"><div class="grande">$10.000</div><div class="peq">precio del plan más económico (Micro)</div></div>
+    <div class="dato"><div class="grande">5 planes</div><div class="peq">Trial · Micro · Básico · Profesional · Empresarial</div></div>
+  </div>
+
+  <h3>El recorrido de un cliente</h3>
+  <div class="recorrido no-cortar">
+    <div class="fila">
+      <div class="paso n8n"><div class="ico" style="background:var(--azul)">1</div><b>Contenido</b><span>n8n escribe 7 publicaciones cada lunes</span></div>
+      <div class="flecha">›</div>
+      <div class="paso humano"><div class="ico" style="background:#D69E00">2</div><b>Aprobación</b><span>El equipo revisa y aprueba</span></div>
+      <div class="flecha">›</div>
+      <div class="paso meta"><div class="ico" style="background:var(--verde)">3</div><b>Redes</b><span>Se publica en Facebook e Instagram</span></div>
+      <div class="flecha">›</div>
+      <div class="paso n8n"><div class="ico" style="background:var(--azul)">4</div><b>Chat con Dimo</b><span>El interesado conversa con el asesor IA</span></div>
+    </div>
+    <div style="height:4mm"></div>
+    <div class="fila">
+      <div class="paso n8n"><div class="ico" style="background:var(--azul)">5</div><b>Lead guardado</b><span>Queda en la hoja con su nivel de interés</span></div>
+      <div class="flecha">›</div>
+      <div class="paso humano"><div class="ico" style="background:#D69E00">6</div><b>Contacto humano</b><span>Llamamos a los "calientes"</span></div>
+      <div class="flecha">›</div>
+      <div class="paso n8n"><div class="ico" style="background:var(--azul)">7</div><b>Prueba gratis</b><span>Correos los días 0, 3, 10 y 14</span></div>
+      <div class="flecha">›</div>
+      <div class="paso meta"><div class="ico" style="background:var(--verde)">8</div><b>Cliente</b><span>Paga un plan y se detienen los correos</span></div>
+    </div>
+    <div class="leyenda">
+      <span><i style="background:var(--azul-claro);border-color:var(--azul)"></i>Automático (n8n)</span>
+      <span><i style="background:var(--amarillo-claro);border-color:var(--amarillo)"></i>Lo hace una persona</span>
+      <span><i style="background:var(--verde-claro);border-color:var(--verde)"></i>Resultado visible</span>
+    </div>
+  </div>
+
+</section>
+
+<!-- ======================= 2. LOS 4 FLUJOS ======================= -->
+<section class="seccion">
+  <h2><span class="num">2.</span>Los 4 flujos automáticos</h2>
+  <p>En n8n, cada automatización se llama <strong>workflow</strong> (flujo). El sistema tiene cuatro:</p>
+
+  <div class="flujo">
+    <div class="cab"><div class="n">01</div><div><h3>Agente de Ventas "Dimo"</h3><small>Chat con inteligencia artificial (Claude)</small></div><span class="estado listo">Funcionando</span></div>
+    <div class="cuerpo"><dl>
+      <dt>Cuándo actúa</dt><dd>Cada vez que alguien escribe en el chat.</dd>
+      <dt>Qué hace</dt><dd>Pregunta por el negocio, explica cómo Storedimo resuelve su problema, responde objeciones ("es caro", "uso Excel") e invita a la prueba gratis. Cuando obtiene nombre y contacto, lo guarda en la hoja <code>Leads</code>.</dd>
+      <dt>Qué NO hace</dt><dd>No inventa precios, descuentos ni funciones. Si no sabe algo, promete que el equipo responderá y lo deja anotado.</dd>
+      <dt>Resultado</dt><dd>Una fila por prospecto en la pestaña <code>Leads</code>.</dd>
+    </dl></div>
+  </div>
+
+  <div class="flujo">
+    <div class="cab"><div class="n">02</div><div><h3>Generador de contenido semanal</h3><small>Todos los lunes a las 7:00 a. m.</small></div><span class="estado listo">Funcionando</span></div>
+    <div class="cuerpo"><dl>
+      <dt>Qué hace</dt><dd>Escribe 7 publicaciones (una por día) para Facebook, Instagram, TikTok y LinkedIn, cada una dirigida a un tipo de negocio diferente. Incluye gancho, texto, idea de imagen o video, llamado a la acción y hashtags.</dd>
+      <dt>Mezcla semanal</dt><dd>2 de dolor del cliente · 2 educativas · 1 demostración · 1 caso de ejemplo · 1 oferta.</dd>
+      <dt>Resultado</dt><dd>7 filas nuevas en la pestaña <code>Contenido</code> con estado <code>pendiente_aprobacion</code>.</dd>
+    </dl></div>
+  </div>
+
+  <div class="flujo">
+    <div class="cab"><div class="n">03</div><div><h3>Seguimiento de la prueba gratis</h3><small>Se activa cuando alguien se registra en Storedimo</small></div><span class="estado pend">En configuración</span></div>
+    <div class="cuerpo"><dl>
+      <dt>Cuándo actúa</dt><dd>La aplicación Laravel avisa a n8n cada vez que se crea una suscripción Trial.</dd>
+      <dt>Qué hace</dt><dd>Envía 4 correos: <strong>día 0</strong> bienvenida con los primeros pasos, <strong>día 3</strong> valor (control de bajas), <strong>día 10</strong> "te quedan 5 días" y <strong>día 14</strong> "mañana termina tu prueba".</dd>
+      <dt>Detalle clave</dt><dd>Antes de los correos de los días 10 y 14 pregunta a Storedimo si el cliente ya pagó. Si ya pagó, no le escribe más.</dd>
+      <dt>Falta</dt><dd>Agregar el código de integración en Laravel y conectar Gmail.</dd>
+    </dl></div>
+  </div>
+
+  <div class="flujo">
+    <div class="cab"><div class="n">04</div><div><h3>Publicación automática en Facebook e Instagram</h3><small>Todos los días a las 9:00 a. m. (hora Colombia)</small></div><span class="estado pend">En configuración</span></div>
+    <div class="cuerpo"><dl>
+      <dt>Qué hace</dt><dd>Busca en la hoja las publicaciones <code>aprobado</code> de ese día para Facebook o Instagram, crea la imagen con nuestra plantilla (Bannerbear) y la publica con su texto. Luego cambia la fila a <code>publicado</code>.</dd>
+      <dt>No toca</dt><dd>TikTok y LinkedIn: esas publicaciones las hace el equipo a mano.</dd>
+      <dt>Falta</dt><dd>Crear las plantillas en Bannerbear y conectar la página de Facebook y la cuenta de Instagram.</dd>
+    </dl></div>
+  </div>
+</section>
+
+<!-- ======================= 3. LA HOJA ======================= -->
+<section class="seccion">
+  <h2><span class="num">3.</span>La hoja de cálculo: nuestro tablero</h2>
+  <p>Todo lo que hace el sistema queda en una sola hoja de <strong>Google Sheets</strong> compartida con el equipo. Tiene dos pestañas.</p>
+
+  <h3>Pestaña "Contenido": el calendario de publicaciones</h3>
+  <p>Cada fila es una publicación. La columna <code>estado</code> indica en qué paso va:</p>
+  <div class="chips">
+    <span class="chip c1">pendiente_aprobacion</span><span class="chip-flecha">→</span>
+    <span class="chip c2">aprobado</span><span class="chip-flecha">→</span>
+    <span class="chip c3">publicado</span>
+  </div>
+  <table>
+    <tr><th style="width:42mm">Estado</th><th>Qué significa</th><th style="width:38mm">Quién lo pone</th></tr>
+    <tr><td><code>pendiente_aprobacion</code></td><td>La IA la escribió y nadie la ha revisado.</td><td>n8n (automático)</td></tr>
+    <tr><td><code>aprobado</code></td><td>Revisada y lista. Si es de Facebook o Instagram, n8n la publicará el día indicado en <code>dia</code>.</td><td>El equipo</td></tr>
+    <tr><td><code>publicado</code></td><td>Ya salió en redes. En <code>imagen_url</code> queda el enlace de la imagen usada.</td><td>n8n (automático)</td></tr>
+  </table>
+  <p>Columnas: <code>dia</code>, <code>red</code>, <code>tipo</code>, <code>negocio_objetivo</code>, <code>gancho</code> (la frase que va en la imagen), <code>texto</code>, <code>idea_visual</code>, <code>cta</code>, <code>hashtags</code>, <code>estado</code>, <code>imagen_url</code>.</p>
+
+  <h3>Pestaña "Leads": los prospectos</h3>
+  <p>Cada fila es una persona que conversó con Dimo. Lo más importante es la columna <code>interes</code>:</p>
+  <table>
+    <tr><th style="width:28mm">Interés</th><th>Qué significa</th><th style="width:52mm">Qué hacemos</th></tr>
+    <tr><td><b>humano</b></td><td>Pidió hablar con una persona, soporte, facturación o un plan a la medida.</td><td><b>Contactar el mismo día</b></td></tr>
+    <tr><td><b>caliente</b></td><td>Muy interesado; está listo para probar o comprar.</td><td>Contactar en menos de 24 horas por WhatsApp</td></tr>
+    <tr><td><b>tibio</b></td><td>Interesado pero con dudas u objeciones.</td><td>Revisar las <code>notas</code> y hacer seguimiento en la semana</td></tr>
+    <tr><td><b>frio</b></td><td>Solo estaba mirando.</td><td>Nada por ahora</td></tr>
+  </table>
+  <p>Otras columnas: <code>nombre</code>, <code>negocio</code>, <code>ciudad</code>, <code>correo</code>, <code>whatsapp</code>, <code>control_actual</code> (cómo maneja hoy su inventario) y <code>notas</code> (dolores, objeciones y preguntas pendientes).</p>
+
+  <div class="nota alerta">
+    <b class="tit">No cambies los encabezados de la hoja</b>
+    Los nombres de las columnas (fila 1) deben quedar exactamente como están: en minúscula, sin tildes ni espacios. Si se cambia uno, por ejemplo <code>negocio</code> por <code>negocios</code>, los flujos dejan de funcionar. Para aprobar, escribe <code>aprobado</code> en minúscula.
+  </div>
+</section>
+
+<!-- ======================= 4. RUTINA ======================= -->
+<section class="seccion">
+  <h2><span class="num">4.</span>¿Qué le toca hacer al equipo?</h2>
+  <p>La automatización hace la mayor parte del trabajo, pero necesita estas tareas humanas para funcionar bien:</p>
+
+  <table class="rutina">
+    <tr><th>Cuándo</th><th>Tarea</th><th>Tiempo aprox.</th></tr>
+    <tr><td>Lunes</td><td>Revisar las 7 publicaciones nuevas de la pestaña <code>Contenido</code>. Corregir lo necesario, borrar las que no sirvan y escribir <code>aprobado</code> en las buenas.</td><td>30 min</td></tr>
+    <tr><td>Lunes a martes</td><td>Hacer las piezas de <strong>TikTok y LinkedIn</strong> aprobadas: grabar la pantalla de Storedimo según la <code>idea_visual</code> y editar en CapCut, o diseñar en Canva.</td><td>1 a 2 horas</td></tr>
+    <tr><td>Todos los días</td><td>Revisar la pestaña <code>Leads</code> y contactar a los <b>humano</b> y <b>caliente</b>. Anotar el resultado en <code>notas</code>.</td><td>15 a 30 min</td></tr>
+    <tr><td>Todos los días</td><td>Revisar en Facebook e Instagram que las publicaciones salieron y responder comentarios y mensajes.</td><td>15 min</td></tr>
+    <tr><td>Una vez por semana</td><td>Grabar al menos <strong>1 video real</strong> del sistema funcionando (por ejemplo, registrar una venta y ver cómo baja el stock). Es el contenido que más vende.</td><td>30 min</td></tr>
+    <tr><td>Una vez al mes</td><td>Revisar resultados: cuántos leads, cuántas pruebas, cuántos clientes pagaron y qué publicaciones funcionaron mejor.</td><td>1 hora</td></tr>
+  </table>
+
+  <h3>Cómo responder a un lead "caliente"</h3>
+  <ol>
+    <li>Lee la fila completa: el tipo de negocio, cómo controla hoy su inventario y las <code>notas</code>. Dimo ya te dejó el contexto; no le vuelvas a preguntar lo mismo.</li>
+    <li>Escríbele por WhatsApp mencionando su negocio: <em>"Hola Carlos, soy [nombre] de Storedimo. Vi que manejas tu ferretería en Excel…"</em></li>
+    <li>Ofrécele 15 minutos para configurar su prueba gratis juntos.</li>
+    <li>Anota en <code>notas</code> qué pasó y la fecha.</li>
+  </ol>
+
+  <div class="nota ok">
+    <b class="tit">Regla de oro para aprobar contenido</b>
+    Antes de aprobar, pregúntate: ¿un dueño de tienda entendería esto en 3 segundos? ¿Promete algo que Storedimo no hace? ¿El precio y los datos son correctos? Si algo no cuadra, corrígelo o no lo apruebes.
+  </div>
+</section>
+
+<!-- ======================= 5. PLANTILLAS ======================= -->
+<section class="seccion">
+  <h2><span class="num">5.</span>Las plantillas de imagen</h2>
+  <p>Para Facebook e Instagram, n8n arma la imagen automáticamente: toma el <code>gancho</code> de la publicación y lo escribe sobre una de estas tres plantillas, según el <code>tipo</code>.</p>
+
+  <div class="plantillas">
+    <figure><img src="../plantillas/vista_previa_dolor.png" alt="Plantilla Dolor"><figcaption><b>Dolor</b>Para publicaciones sobre pérdidas, vencidos, robos y descuadres.</figcaption></figure>
+    <figure><img src="../plantillas/vista_previa_tip.png" alt="Plantilla Tip"><figcaption><b>Tip</b>Para publicaciones educativas y demostraciones de módulos.</figcaption></figure>
+    <figure><img src="../plantillas/vista_previa_oferta.png" alt="Plantilla Oferta"><figcaption><b>Oferta</b>Para la invitación directa a la prueba gratis y los casos de ejemplo.</figcaption></figure>
+  </div>
+
+  <div class="nota aviso">
+    <b class="tit">El gancho debe ser corto</b>
+    La frase de la imagen se lee mejor con <strong>máximo 12 a 15 palabras</strong>. Si el gancho es muy largo, acórtalo en la hoja antes de aprobar. El texto completo va en la descripción de la publicación, no en la imagen.
+  </div>
+
+</section>
+
+<!-- ======================= 6. HERRAMIENTAS ======================= -->
+<section class="seccion">
+  <h2><span class="num">6.</span>Herramientas, seguridad y archivos</h2>
+  <h3 style="margin-top:0">Herramientas y cuentas de Softdimo que usa el sistema</h3>
+  <table>
+    <tr><th style="width:38mm">Herramienta</th><th>Para qué se usa</th></tr>
+    <tr><td><b>n8n</b></td><td>La plataforma donde viven y se ejecutan los 4 flujos.</td></tr>
+    <tr><td><b>Claude (Anthropic)</b></td><td>La inteligencia artificial que conversa como Dimo y escribe el contenido.</td></tr>
+    <tr><td><b>Google Sheets</b></td><td>El tablero compartido: pestañas <code>Leads</code> y <code>Contenido</code>.</td></tr>
+    <tr><td><b>Gmail</b></td><td>Envía los correos de seguimiento de la prueba gratis.</td></tr>
+    <tr><td><b>Bannerbear</b></td><td>Genera las imágenes a partir de las plantillas.</td></tr>
+    <tr><td><b>Meta (Facebook / Instagram)</b></td><td>Donde se publican automáticamente las publicaciones aprobadas.</td></tr>
+    <tr><td><b>Storedimo (Laravel)</b></td><td>Avisa a n8n de cada nueva prueba e informa si el cliente ya pagó.</td></tr>
+  </table>
+  <div class="nota alerta">
+    <b class="tit">Seguridad</b>
+    Las contraseñas, llaves de API y tokens <strong>no se comparten por chat ni por correo</strong>. Quedan guardados como credenciales dentro de n8n. Si necesitas acceso a algo, pídeselo al responsable del proyecto.
+  </div>
+  <h3>Archivos del proyecto</h3>
+  <table>
+    <tr><th style="width:70mm">Archivo o carpeta</th><th>Contenido</th></tr>
+    <tr><td><code>workflows/</code></td><td>Los 4 flujos de n8n, listos para importar.</td></tr>
+    <tr><td><code>prompts/system_prompt_asesor.md</code></td><td>Las instrucciones y el conocimiento de Dimo.</td></tr>
+    <tr><td><code>plantillas/</code></td><td>Fondos y vistas previas de las imágenes; en <code>fuente/</code> están los diseños editables.</td></tr>
+    <tr><td><code>laravel/INTEGRACION_LARAVEL.md</code></td><td>Código para conectar Storedimo con n8n.</td></tr>
+    <tr><td><code>GUIA_PUBLICACION_FB_IG.md</code></td><td>Configuración técnica de Bannerbear, Facebook e Instagram.</td></tr>
+    <tr><td><code>README.md</code></td><td>Instalación técnica completa.</td></tr>
+  </table>
+</section>
+
+<!-- ======================= 7. PROBLEMAS Y PRÓXIMOS PASOS ======================= -->
+<section class="seccion">
+  <h2><span class="num">7.</span>Problemas frecuentes y próximos pasos</h2>
+
+  <table>
+    <tr><th style="width:62mm">Si pasa esto…</th><th>Revisa esto</th></tr>
+    <tr><td>El lunes no aparecieron publicaciones nuevas</td><td>Que el flujo 02 esté <b>activo</b> en n8n y revisa la pestaña <em>Executions</em> para ver el error.</td></tr>
+    <tr><td>Una publicación aprobada no salió en redes</td><td>Que <code>estado</code> diga exactamente <code>aprobado</code>, que <code>dia</code> sea la fecha de hoy y que <code>red</code> sea <code>facebook</code> o <code>instagram</code>.</td></tr>
+    <tr><td>Error "Column names were updated…"</td><td>Alguien cambió un encabezado de la hoja. Devuélvelo a su nombre original.</td></tr>
+    <tr><td>Dimo respondió algo incorrecto</td><td>Avisa al responsable con una captura. Las instrucciones de Dimo se pueden ajustar (archivo <code>prompts/system_prompt_asesor.md</code>).</td></tr>
+    <tr><td>Cambió un precio o un plan</td><td>Hay que actualizarlo en las instrucciones de Dimo, en el generador de contenido y en la plantilla "Oferta".</td></tr>
+    <tr><td>Error de token en Facebook o Instagram</td><td>El token de Meta venció. El responsable debe generar uno nuevo.</td></tr>
+  </table>
+
+  <h3>Próximos pasos del proyecto</h3>
+  <ul class="check">
+    <li>Terminar la integración con Laravel para activar el seguimiento de la prueba gratis (flujo 03).</li>
+    <li>Montar las plantillas en Bannerbear y conectar Facebook e Instagram (flujo 04).</li>
+    <li>Conectar a Dimo con <strong>WhatsApp Business</strong>, el canal que más vende en Colombia.</li>
+    <li>Completar en Storedimo las <strong>descripciones de los planes</strong>, que hoy son texto de relleno.</li>
+    <li>Revisar la escala de precios: Básico ($110.000) y Profesional ($121.000) casi cuestan lo mismo.</li>
+    <li>Crear una <strong>página de ventas</strong> (landing) con video demo y botón de WhatsApp.</li>
+    <li>Simplificar el formulario de la prueba gratis: pedir solo nombre, negocio, correo y celular.</li>
+    <li>Conseguir el logo en alta resolución para mejorar las imágenes.</li>
+  </ul>
+
+</section>
+
+</body>
+</html>

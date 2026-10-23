@@ -1,0 +1,60 @@
+/* Plantillas Storedimo 1080x1080 – estilos compartidos */
+:root {
+  --azul: #337AB7;
+  --azul-oscuro: #0B2545;
+  --azul-medio: #13406E;
+  --verde: #1C8A4C;
+  --claro: #F4F7FB;
+  --texto: #0B2545;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+}
+
+.lienzo {
+  position: relative;
+  width: 1080px;
+  height: 1080px;
+  overflow: hidden;
+}
+
+.logo {
+  position: absolute;
+  top: 48px;
+  left: 64px;
+  width: 300px;
+}
+
+/* Zona donde Bannerbear escribe el "gancho" (x:90 y:300 ancho:900 alto:420) */
+.zona-gancho {
+  position: absolute;
+  left: 90px;
+  top: 300px;
+  width: 900px;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  font-size: 68px;
+  font-weight: 800;
+  line-height: 1.12;
+  letter-spacing: -1px;
+}
+
+/* El texto de ejemplo solo se ve en la vista previa (?preview) */
+.zona-gancho .ejemplo { display: none; }
+body.preview .zona-gancho .ejemplo { display: block; }
+
+.pildora {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  white-space: nowrap;
+}

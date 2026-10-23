@@ -1,0 +1,259 @@
+{
+  "name": "Storedimo - 04 Publicar aprobados en Facebook e Instagram",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            { "field": "days", "daysInterval": 1, "triggerAtHour": 9 }
+          ]
+        }
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000001",
+      "name": "Todos los días 9am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            { "id": "d1b2c3d4-0004-4000-8000-0000000000c1", "name": "facebook_page_id", "value": "PEGA_AQUI_EL_ID_DE_TU_PAGINA_DE_FACEBOOK", "type": "string" },
+            { "id": "d1b2c3d4-0004-4000-8000-0000000000c2", "name": "instagram_user_id", "value": "PEGA_AQUI_EL_ID_DE_TU_CUENTA_DE_INSTAGRAM", "type": "string" },
+            { "id": "d1b2c3d4-0004-4000-8000-0000000000c3", "name": "bannerbear_template_dolor", "value": "PEGA_AQUI_EL_ID_DE_LA_PLANTILLA_DOLOR", "type": "string" },
+            { "id": "d1b2c3d4-0004-4000-8000-0000000000c5", "name": "bannerbear_template_tip", "value": "PEGA_AQUI_EL_ID_DE_LA_PLANTILLA_TIP", "type": "string" },
+            { "id": "d1b2c3d4-0004-4000-8000-0000000000c6", "name": "bannerbear_template_oferta", "value": "PEGA_AQUI_EL_ID_DE_LA_PLANTILLA_OFERTA", "type": "string" },
+            { "id": "d1b2c3d4-0004-4000-8000-0000000000c4", "name": "graph_version", "value": "v22.0", "type": "string" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000002",
+      "name": "Configuración",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [220, 0]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "PEGA_AQUI_LA_URL_DE_TU_GOOGLE_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Contenido"
+        },
+        "filtersUI": {
+          "values": [
+            { "lookupColumn": "estado", "lookupValue": "aprobado" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000003",
+      "name": "Leer aprobados",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [440, 0]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Deja solo las publicaciones de HOY para facebook o instagram.\n// Acepta la fecha como 2026-10-26 o 26/10/2026 (formato de Google Sheets en Colombia).\nconst hoy = $now.setZone('America/Bogota').toFormat('yyyy-MM-dd');\n\nconst normalizarFecha = (valor) => {\n  const texto = String(valor ?? '').trim();\n  const dmy = texto.match(/^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$/);\n  if (dmy) return `${dmy[3]}-${dmy[2].padStart(2, '0')}-${dmy[1].padStart(2, '0')}`;\n  return texto.slice(0, 10);\n};\n\n// Elige la plantilla de Bannerbear según el tipo de publicación.\nconst config = $('Configuración').first().json;\nconst elegirPlantilla = (tipo) => {\n  const t = String(tipo ?? '').toLowerCase();\n  if (t.includes('dolor')) return config.bannerbear_template_dolor;\n  if (t.includes('oferta') || t.includes('social')) return config.bannerbear_template_oferta;\n  return config.bannerbear_template_tip;\n};\n\nreturn $input.all()\n  .filter(item => {\n    const red = String(item.json.red ?? '').toLowerCase().trim();\n    return normalizarFecha(item.json.dia) === hoy && ['facebook', 'instagram'].includes(red);\n  })\n  .map(item => {\n    item.json.plantilla = elegirPlantilla(item.json.tipo);\n    return item;\n  });"
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000004",
+      "name": "Filtrar publicaciones de hoy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [660, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://sync.api.bannerbear.com/v2/images",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ template: $json.plantilla,modifications: [ { name: 'gancho', text: $json.gancho } ] }) }}",
+        "options": {}
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000005",
+      "name": "Crear imagen (Bannerbear)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [880, 0]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false, "leftValue": "", "typeValidation": "loose" },
+          "conditions": [
+            {
+              "id": "d1b2c3d4-0004-4000-8000-0000000000a1",
+              "leftValue": "={{ $('Filtrar publicaciones de hoy').item.json.red.toLowerCase().trim() }}",
+              "rightValue": "facebook",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000006",
+      "name": "¿Es Facebook?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1100, 0]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Configuración').first().json.graph_version }}/{{ $('Configuración').first().json.facebook_page_id }}/photos",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "url", "value": "={{ $('Crear imagen (Bannerbear)').item.json.image_url_png }}" },
+            { "name": "message", "value": "={{ $('Filtrar publicaciones de hoy').item.json.texto }}\n\n{{ $('Filtrar publicaciones de hoy').item.json.cta }}\n\n{{ $('Filtrar publicaciones de hoy').item.json.hashtags }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000007",
+      "name": "Publicar en Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, -120]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Configuración').first().json.graph_version }}/{{ $('Configuración').first().json.instagram_user_id }}/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "image_url", "value": "={{ $('Crear imagen (Bannerbear)').item.json.image_url_png }}" },
+            { "name": "caption", "value": "={{ $('Filtrar publicaciones de hoy').item.json.texto }}\n\n{{ $('Filtrar publicaciones de hoy').item.json.cta }}\n\n{{ $('Filtrar publicaciones de hoy').item.json.hashtags }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000008",
+      "name": "Instagram - Subir imagen",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 120]
+    },
+    {
+      "parameters": { "amount": 15, "unit": "seconds" },
+      "id": "d1b2c3d4-0004-4000-8000-000000000009",
+      "name": "Esperar a que Instagram procese",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1560, 120],
+      "webhookId": "storedimo-wait-ig"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Configuración').first().json.graph_version }}/{{ $('Configuración').first().json.instagram_user_id }}/media_publish",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "creation_id", "value": "={{ $('Instagram - Subir imagen').item.json.id }}" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000010",
+      "name": "Instagram - Publicar",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1780, 120]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "PEGA_AQUI_LA_URL_DE_TU_GOOGLE_SHEET"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Contenido"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Filtrar publicaciones de hoy').item.json.row_number }}",
+            "estado": "publicado",
+            "imagen_url": "={{ $('Crear imagen (Bannerbear)').item.json.image_url_png }}"
+          },
+          "matchingColumns": ["row_number"],
+          "schema": [
+            { "id": "row_number", "displayName": "row_number", "type": "string", "canBeUsedToMatch": true, "required": false, "display": true, "readOnly": true, "removed": false },
+            { "id": "estado", "displayName": "estado", "type": "string", "canBeUsedToMatch": true, "required": false, "display": true, "removed": false },
+            { "id": "imagen_url", "displayName": "imagen_url", "type": "string", "canBeUsedToMatch": true, "required": false, "display": true, "removed": false }
+          ]
+        },
+        "options": {}
+      },
+      "id": "d1b2c3d4-0004-4000-8000-000000000011",
+      "name": "Marcar como publicado",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [2000, 0]
+    }
+  ],
+  "connections": {
+    "Todos los días 9am": {
+      "main": [[{ "node": "Configuración", "type": "main", "index": 0 }]]
+    },
+    "Configuración": {
+      "main": [[{ "node": "Leer aprobados", "type": "main", "index": 0 }]]
+    },
+    "Leer aprobados": {
+      "main": [[{ "node": "Filtrar publicaciones de hoy", "type": "main", "index": 0 }]]
+    },
+    "Filtrar publicaciones de hoy": {
+      "main": [[{ "node": "Crear imagen (Bannerbear)", "type": "main", "index": 0 }]]
+    },
+    "Crear imagen (Bannerbear)": {
+      "main": [[{ "node": "¿Es Facebook?", "type": "main", "index": 0 }]]
+    },
+    "¿Es Facebook?": {
+      "main": [
+        [{ "node": "Publicar en Facebook", "type": "main", "index": 0 }],
+        [{ "node": "Instagram - Subir imagen", "type": "main", "index": 0 }]
+      ]
+    },
+    "Publicar en Facebook": {
+      "main": [[{ "node": "Marcar como publicado", "type": "main", "index": 0 }]]
+    },
+    "Instagram - Subir imagen": {
+      "main": [[{ "node": "Esperar a que Instagram procese", "type": "main", "index": 0 }]]
+    },
+    "Esperar a que Instagram procese": {
+      "main": [[{ "node": "Instagram - Publicar", "type": "main", "index": 0 }]]
+    },
+    "Instagram - Publicar": {
+      "main": [[{ "node": "Marcar como publicado", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1", "timezone": "America/Bogota" },
+  "pinData": {}
+}
